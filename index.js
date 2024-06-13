@@ -3,6 +3,7 @@ const path = require("node:path");
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const { token } = require("./config.json");
 
+console.log("ça marche");
 
 process.on("exit", (code) => {
     console.log("le processus s'est arreter :" + code);
