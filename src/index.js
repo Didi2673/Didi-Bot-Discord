@@ -1,6 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Intents } = require("discord.js");
 const { token } = require("../config.json");
 
 console.log("ça marche");
@@ -20,7 +20,13 @@ process.on("unhandledRejection", (reason, promise) => {
 process.on("warning", (...args) => console.log(...args));
 
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,         // Nécessaire pour gérer les guildes (serveurs)
+        GatewayIntentBits.GuildMessages, // Nécessaire pour écouter les messages dans les serveurs
+        GatewayIntentBits.MessageContent // Nécessaire pour lire le contenu des messages
+    ],
+});
 
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, "commands");
@@ -62,4 +68,3 @@ for (const file of eventFiles) {
 
 
 client.login(token);
-
