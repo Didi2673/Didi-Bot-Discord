@@ -22,12 +22,16 @@ process.on("warning", (...args) => console.log(...args));
 
 const client = new Client({
     intents: [
-        GatewayIntentBits.Guilds,         // Nécessaire pour gérer les guildes (serveurs)
-        GatewayIntentBits.GuildMessages, // Nécessaire pour écouter les messages dans les serveurs
-        GatewayIntentBits.MessageContent // Nécessaire pour lire le contenu des messages
+        GatewayIntentBits.Guilds,             // Pour les serveurs, salons, rôles et fils
+        GatewayIntentBits.GuildMessages,      // Pour écouter la création/suppression de messages
+        GatewayIntentBits.MessageContent,     // Pour lire le contenu (XP et logs de modification)
+        GatewayIntentBits.GuildMembers,       // Pour les entrées/sorties et changements de rôles/boosts
+        GatewayIntentBits.GuildModeration,    // Pour les bans et unbans
+        GatewayIntentBits.GuildVoiceStates,   // Pour les logs de salons vocaux
+        GatewayIntentBits.GuildWebhooks,      // Optionnel : utile pour certains logs avancés
+        GatewayIntentBits.GuildMessageReactions // Optionnel : pour les logs de réactions
     ],
 });
-
 client.commands = new Collection();
 const foldersPath = path.join(__dirname, "commands");
 const commandFolders = fs.readdirSync(foldersPath);

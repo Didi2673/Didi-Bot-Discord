@@ -8,6 +8,11 @@ module.exports = {
 
     async execute(interaction) {
         const userData = getUserData(interaction.user.id, interaction.guild.id);
-        await interaction.reply(`🎮 Tu es au niveau ${userData.level} avec ${userData.xp} XP.`);
+        // On affiche maintenant les deux informations
+        await interaction.reply(
+            `🎮 **Niveau :** ${userData.level}\n` +
+            `✨ **XP palier :** ${userData.xp} / ${userData.level * 100}\n` +
+            `🏆 **XP Totale :** ${userData.totalXP || userData.xp}`
+        );
     },
 };

@@ -15,18 +15,22 @@ function saveLevels() {
 
 function getUserData(userId, guildId) {
     if (!levels[guildId]) levels[guildId] = {};
-    if (!levels[guildId][userId]) levels[guildId][userId] = { xp: 0, level: 1 };
+    // AJOUT : On initialise totalXP à 0 si l'utilisateur est nouveau
+    if (!levels[guildId][userId]) levels[guildId][userId] = { xp: 0, totalXP: 0, level: 1 };
     return levels[guildId][userId];
 }
 
 function addXP(userId, guildId, xpToAdd) {
     const userData = getUserData(userId, guildId);
+    
+    // On met à jour les deux valeurs
     userData.xp += xpToAdd;
+    userData.totalXP = (userData.totalXP || 0) + xpToAdd; // Utilise || 0 pour les anciens comptes
 
     const nextLevelXP = userData.level * 100;
     if (userData.xp >= nextLevelXP) {
         userData.level += 1;
-        userData.xp -= nextLevelXP;
+        userData.xp -= nextLevelXP; // L'XP actuelle est reset, mais pas totalXP
         saveLevels();
         return userData;
     }
@@ -35,7 +39,27 @@ function addXP(userId, guildId, xpToAdd) {
     return null;
 }
 
+function updateLevelFromTotal(userId, guildId) {
+    const userData = getUserData(userId, guildId);
+    let total = userData.totalXP || 0;
+    let newLevel = 1;
+    
+    // On recalcule le niveau en fonction de l'XP totale
+    // Palier Niv 1 -> 2 : 100 XP | Niv 2 -> 3 : 200 XP, etc.
+    while (total >= newLevel * 100) {
+        total -= newLevel * 100;
+        newLevel++;
+    }
+    
+    userData.level = newLevel;
+    userData.xp = total;
+    saveLevels();
+    return userData;
+}
+
 module.exports = {
     addXP,
     getUserData,
+    saveLevels, // On l'exporte pour pouvoir modifier les données directement
+    updateLevelFromTotal
 };
